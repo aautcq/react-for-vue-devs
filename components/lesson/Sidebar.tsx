@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { lessonPath, lessons, trackTitles, type Track } from "@/lib/lessons";
 
-const tracks: Track[] = ["react", "next"];
+const tracks: Track[] = ["react", "next", "tanstack-query", "redux", "trpc", "motion"];
 
 export function Sidebar() {
   const pathname = usePathname();

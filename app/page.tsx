@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { allLessonsInOrder, lessonPath, lessons, trackTitles, type Track } from "@/lib/lessons";
 
-const tracks: Track[] = ["react", "next"];
+const tracks: Track[] = ["react", "next", "tanstack-query", "redux", "trpc", "motion"];
 
 export default function Home() {
   const totalLessons = allLessonsInOrder().length;
@@ -12,12 +12,12 @@ export default function Home() {
         A personalized course
       </div>
       <h1 className="mb-4 text-4xl font-semibold tracking-tight">
-        React & Next.js, for a Vue/Nuxt developer
+        The React ecosystem, for a Vue/Nuxt developer
       </h1>
       <p className="mb-10 max-w-xl text-lg leading-7 text-zinc-600 dark:text-zinc-400">
-        {totalLessons} lessons across two Tracks. Every lesson pairs a live demo with its source,
+        {totalLessons} lessons across six Tracks. Every lesson pairs a live demo with its source,
         calls out the closest Vue/Nuxt equivalent, and ends with a short exercise. One small Todo
-        app is built up incrementally across both Tracks to tie concepts together.
+        app is built up incrementally across every Track to tie concepts together.
       </p>
 
       <div className="space-y-10">

@@ -42,10 +42,10 @@ export async function GET(request: Request) {}
       <CodeBlock
         filename="app/api/todos/route.ts"
         code={`
-import { initialTodos } from '@/lib/todo-app/types'
+import { getTodos } from '@/lib/todo-app/server-store'
 
 export async function GET() {
-  return Response.json(initialTodos)
+  return Response.json(await getTodos())
 }
 `}
       />

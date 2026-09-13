@@ -3,7 +3,7 @@
  * and the landing page's table of contents. See CONTEXT.md for "Track" / "Lesson".
  */
 
-export type Track = "react" | "next";
+export type Track = "react" | "next" | "tanstack-query" | "redux" | "trpc" | "motion";
 
 export type LessonMeta = {
   slug: string;
@@ -15,6 +15,10 @@ export type LessonMeta = {
 export const trackTitles: Record<Track, string> = {
   react: "React",
   next: "Next.js",
+  "tanstack-query": "TanStack Query",
+  redux: "Redux",
+  trpc: "tRPC",
+  motion: "Framer Motion",
 };
 
 export const lessons: Record<Track, LessonMeta[]> = {
@@ -152,18 +156,105 @@ export const lessons: Record<Track, LessonMeta[]> = {
       blurb: "What changes between `next dev` and a production deployment.",
     },
   ],
+  "tanstack-query": [
+    {
+      slug: "setup-and-query-client",
+      title: "Setup & QueryClientProvider",
+      blurb: "Standing up a QueryClient alongside the Next Track's Server Components fetching.",
+    },
+    {
+      slug: "usequery-for-todos",
+      title: "useQuery for the Todo List",
+      blurb: "Client-fetched, cached todos via /api/todos — vs. the Fetching Data lesson's server-side await.",
+    },
+    {
+      slug: "usemutation-and-invalidation",
+      title: "useMutation & Cache Invalidation",
+      blurb: "Adding/toggling todos from the client and invalidating the query cache.",
+    },
+    {
+      slug: "optimistic-updates",
+      title: "Optimistic Updates",
+      blurb: "Updating the cache before the server responds, and rolling back on error.",
+    },
+  ],
+  redux: [
+    {
+      slug: "store-and-slices",
+      title: "Store & Slices",
+      blurb: "configureStore and createSlice, compared to Pinia's defineStore.",
+    },
+    {
+      slug: "selectors-and-dispatch",
+      title: "Selectors & Dispatch",
+      blurb: "useSelector/useDispatch and the typed hooks pattern.",
+    },
+    {
+      slug: "todo-filter-slice",
+      title: "A Filter Slice for the Todo List",
+      blurb: "Client-only UI state (filter, pending flag) layered over the server-owned todos.",
+    },
+    {
+      slug: "where-redux-stops",
+      title: "Where Redux Stops",
+      blurb: "Why the todos themselves stay server state, not Redux state.",
+    },
+  ],
+  trpc: [
+    {
+      slug: "routers-and-procedures",
+      title: "Routers & Procedures",
+      blurb: "Defining a typed API surface with initTRPC, queries, and mutations.",
+    },
+    {
+      slug: "the-fetch-adapter-route-handler",
+      title: "The Fetch Adapter Route Handler",
+      blurb: "Serving a router from a Next.js Route Handler with fetchRequestHandler.",
+    },
+    {
+      slug: "a-typed-client-over-tanstack-query",
+      title: "A Typed Client, Same TanStack Query",
+      blurb: "Replacing hand-rolled fetch calls with end-to-end types, same QueryClient underneath.",
+    },
+    {
+      slug: "input-validation-with-zod",
+      title: "Input Validation with Zod",
+      blurb: "Parsing and validating procedure input at the boundary.",
+    },
+  ],
+  motion: [
+    {
+      slug: "motion-basics",
+      title: "motion.div & the Framer Motion → Motion Rename",
+      blurb: "Animating props declaratively, and why the import is now `motion/react`.",
+    },
+    {
+      slug: "animatepresence-for-todos",
+      title: "AnimatePresence for Add & Remove",
+      blurb: "Exit animations for unmounting list items, vs. Vue's <transition-group>.",
+    },
+    {
+      slug: "layout-animations-for-reorder",
+      title: "Layout Animations for Reorder",
+      blurb: "The layout prop animating position changes automatically.",
+    },
+    {
+      slug: "variants-and-gestures",
+      title: "Variants & Gestures",
+      blurb: "Named animation states and whileHover/whileTap interaction shortcuts.",
+    },
+  ],
 };
 
 export function lessonPath(track: Track, slug: string): `/${Track}/${string}` {
   return `/${track}/${slug}`;
 }
 
-/** Flat, ordered list across both Tracks — React first, then Next.js. */
+const trackOrder: Track[] = ["react", "next", "tanstack-query", "redux", "trpc", "motion"];
+
+/** Flat, ordered list across every Track, in curriculum order. */
 export function allLessonsInOrder(): Array<LessonMeta & { track: Track }> {
-  return [
-    ...lessons.react.map((l) => ({ ...l, track: "react" as const })),
-    ...lessons.next.map((l) => ({ ...l, track: "next" as const })),
-  ];
+  return trackOrder.flatMap((track) => lessons[track].map((l) => ({ ...l, track })));
 }
 
 export function adjacentLessons(track: Track, slug: string) {
