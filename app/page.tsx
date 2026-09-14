@@ -7,7 +7,7 @@ export default function Home() {
   const totalLessons = allLessonsInOrder().length;
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-16">
+    <main className="mx-auto min-h-0 w-full max-w-2xl flex-1 overflow-y-auto px-6 py-16">
       <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         A personalized course
       </div>
