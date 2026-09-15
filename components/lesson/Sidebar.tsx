@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { lessonPath, lessons, trackTitles, type Track } from "@/lib/lessons";
 
 const tracks: Track[] = ["react", "next", "tanstack-query", "redux", "trpc", "motion"];
@@ -18,6 +18,39 @@ export function Sidebar() {
     const active = activeTrack(pathname);
     return new Set(active ? [active] : []);
   });
+  const activeLinkRef = useRef<HTMLAnchorElement | null>(null);
+
+  // Whenever navigation lands on a lesson whose track accordion is closed (e.g. via the
+  // command palette, prev/next links, or browser back/forward), open it so the active
+  // link is revealed. Adjusted during render (React's recommended pattern for syncing
+  // state to a prop change) rather than in an effect, adding to the existing open set
+  // rather than replacing it, and never fighting a manual collapse of the same track on
+  // the same route.
+  const [syncedPathname, setSyncedPathname] = useState(pathname);
+  if (pathname !== syncedPathname) {
+    setSyncedPathname(pathname);
+    const active = activeTrack(pathname);
+    if (active) {
+      setOpenTracks((prev) => (prev.has(active) ? prev : new Set(prev).add(active)));
+    }
+  }
+
+  // Only re-runs on navigation, not on manual accordion toggles: by the time this effect
+  // fires, the render-phase adjustment above has already opened the active track (if
+  // needed), so scrolling here would otherwise fight a user manually collapsing/expanding
+  // an unrelated track.
+  useEffect(() => {
+    const link = activeLinkRef.current;
+    if (!link) return;
+    const rect = link.getBoundingClientRect();
+    const container = link.closest("[data-sidebar-scroll]");
+    if (!container) return;
+    const containerRect = container.getBoundingClientRect();
+    const isVisible = rect.top >= containerRect.top && rect.bottom <= containerRect.bottom;
+    if (!isVisible) {
+      link.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [pathname]);
 
   function toggleTrack(track: Track) {
     setOpenTracks((prev) => {
@@ -38,7 +71,7 @@ export function Sidebar() {
           ← React Course
         </Link>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-8">
+      <div data-sidebar-scroll className="min-h-0 flex-1 overflow-y-auto px-4 pb-8">
         {tracks.map((track) => {
           const expanded = openTracks.has(track);
           const listId = `track-lessons-${track}`;
@@ -69,6 +102,7 @@ export function Sidebar() {
                       <li key={lesson.slug}>
                         <Link
                           href={href}
+                          ref={active ? activeLinkRef : undefined}
                           className={`block rounded-md px-2 py-1.5 text-sm ${
                             active
                               ? "bg-black/[.06] font-medium text-black dark:bg-white/[.08] dark:text-white"
